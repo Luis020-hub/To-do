@@ -37,7 +37,7 @@ export default {
       },
       editedTodo: null,
       currentFilter: 'All',
-      theme: 'light' // Estado do tema
+      theme: 'light'
     };
   },
   watch: {
@@ -232,7 +232,7 @@ export default {
 }
 
 .dark {
-  --primary-color: #333;
+  --primary-color: #6C63FF;
   --text-color: #eee;
   --background-color: #222;
 }

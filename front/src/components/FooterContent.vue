@@ -1,11 +1,8 @@
 <template>
-    <div>
-        <footer class="d-block d-md-none fixed-bottom left text-left p-3">
-            <i class="fa-solid" :class="{ 'fa-sun': theme === 'light', 'fa-moon': theme === 'dark' }"></i>
-        </footer>
-        <footer class="d-block d-md-none fixed-bottom right text-right p-3" @click="openAddTodoModal">
-            <i class="fa-solid fa-plus"></i>
-        </footer>
+    <div class="d-block d-md-none fixed-bottom left text-left p-3 d-flex justify-content-between">
+        <i class="fa-solid" :class="{ 'fa-sun': theme === 'light', 'fa-moon': theme === 'dark' }"
+            @click="toggleTheme"></i>
+        <i class="fa-solid fa-plus" @click="openAddTodoModal"></i>
     </div>
 </template>
 
@@ -15,22 +12,14 @@ export default {
         theme: {
             type: String,
             required: true
-        },
-        toggleTheme: {
-            type: Function,
-            required: true
-        }
-    },
-    computed: {
-        themeIcon() {
-            return this.theme === 'light' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
         }
     },
     methods: {
-        openAddTodoModal(event) {
-            if (event.target.classList.contains('fa-plus')) {
-                this.$emit('openAddTodoModal');
-            }
+        openAddTodoModal() {
+            this.$emit('openAddTodoModal');
+        },
+        toggleTheme() {
+            this.$emit('toggleTheme');
         }
     }
 };
@@ -40,7 +29,7 @@ export default {
 .fixed-bottom.left i,
 .fixed-bottom.right i {
     font-size: 2rem;
-    color: #fff;
+    color: var(--text-color);
     background-color: var(--primary-color);
     padding: 0.5rem;
     border-radius: 50%;
