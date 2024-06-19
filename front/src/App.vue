@@ -3,7 +3,6 @@
     <div class="layout col-10">
       <Header @openAddTodoModal="openAddTodoModal" />
       <MainContent :todos="todos" @openTodoDetails="openTodoDetails" />
-      <AppFooterLeft />
       <FooterContent @openAddTodoModal="openAddTodoModal" />
     </div>
   </div>
@@ -12,7 +11,6 @@
 <script>
 import Header from './components/Header.vue';
 import MainContent from './components/MainContent.vue';
-import AppFooterLeft from './components/AppFooterLeft.vue';
 import FooterContent from './components/FooterContent.vue';
 import Swal from 'sweetalert2';
 
@@ -20,7 +18,6 @@ export default {
   components: {
     Header,
     MainContent,
-    AppFooterLeft,
     FooterContent
   },
   data() {
