@@ -10,8 +10,9 @@
                             @click="openAddTodoModal">
                             <i class="fa-solid fa-plus"></i>
                         </button>
-                        <button type="button" class="btn change-theme btn-outline-secondary d-none d-md-block">
-                            <i class="fa-solid fa-sun"></i>
+                        <button type="button" class="btn change-theme btn-outline-secondary d-none d-md-block"
+                            @click="toggleTheme">
+                            <i class="fa-solid" :class="{ 'fa-sun': theme === 'light', 'fa-moon': theme === 'dark' }"></i>
                         </button>
                         <button type="button"
                             class="btn filters btn-outline-secondary dropdown-toggle dropdown-toggle-split"
@@ -34,12 +35,21 @@
 <script>
 export default {
     name: 'AppHeader',
+    props: {
+        theme: {
+            type: String,
+            required: true
+        }
+    },
     methods: {
         openAddTodoModal() {
             this.$emit('openAddTodoModal');
         },
         filter(criteria) {
             this.$emit('filterTodos', criteria);
+        },
+        toggleTheme() {
+            this.$emit('toggleTheme');
         }
     }
 };
@@ -49,9 +59,9 @@ export default {
 .add-todo,
 .change-theme,
 .filters {
-    background-color: #6C63FF;
-    color: #fff;
-    border: 1px solid #fff;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border: 1px solid var(--text-color);
 }
 
 .add-todo:hover {

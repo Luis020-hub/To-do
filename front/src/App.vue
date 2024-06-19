@@ -1,10 +1,13 @@
 <template>
-  <div class="d-flex justify-content-center">
-    <div class="layout col-10">
-      <Header @openAddTodoModal="openAddTodoModal" @filterTodos="filterTodos" />
-      <MainContent :todos="filteredTodos" @openTodoDetails="openTodoDetails" @editTodo="openEditTodoModal"
-        @deleteTodo="confirmDeleteTodo" />
-      <FooterContent @openAddTodoModal="openAddTodoModal" />
+  <div>
+    <div class="d-flex justify-content-center">
+      <div class="layout col-10">
+        <Header @openAddTodoModal="openAddTodoModal" @filterTodos="filterTodos" @toggleTheme="toggleTheme"
+          :theme="theme" />
+        <MainContent :todos="filteredTodos" @openTodoDetails="openTodoDetails" @editTodo="openEditTodoModal"
+          @deleteTodo="confirmDeleteTodo" />
+        <FooterContent @openAddTodoModal="openAddTodoModal" @toggleTheme="toggleTheme" :theme="theme" />
+      </div>
     </div>
   </div>
 </template>
@@ -33,8 +36,14 @@ export default {
         date: ''
       },
       editedTodo: null,
-      currentFilter: 'All'
+      currentFilter: 'All',
+      theme: 'light' // Estado do tema
     };
+  },
+  watch: {
+    theme(newTheme) {
+      document.body.className = newTheme;
+    }
   },
   methods: {
     openAddTodoModal() {
@@ -203,14 +212,39 @@ export default {
         default:
           this.filteredTodos = this.todos;
       }
+    },
+    toggleTheme() {
+      this.theme = this.theme === 'light' ? 'dark' : 'light';
     }
   },
   mounted() {
+    document.body.className = this.theme;
     this.filterTodos(this.currentFilter);
   }
 };
 </script>
 
 <style>
-@import '@/assets/style.css';
+:root {
+  --primary-color: #6C63FF;
+  --text-color: #fff;
+  --background-color: #fff;
+}
+
+.dark {
+  --primary-color: #333;
+  --text-color: #eee;
+  --background-color: #222;
+}
+
+.light {
+  --primary-color: #6C63FF;
+  --text-color: #000;
+  --background-color: #fff;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
 </style>

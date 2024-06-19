@@ -43,6 +43,6 @@ export default {
 }
 
 .content-item:hover {
-    background-color: #eee;
+    background-color: #666;
 }
 </style>
