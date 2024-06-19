@@ -2,61 +2,8 @@
     font-family: 'Kanit';
 }
 
-.content-item {
-    border-bottom: 1px solid rgba(108, 99, 255, 0.5);
-    margin-right: 0;
-    cursor: pointer;
-}
-
-.content-item:hover {
-    background-color: #eee;
-}
-
 .form-control:focus {
     border-color: #6C63FF;
     box-shadow: 0 0 5px rgba(108, 99, 255, 0.5);
     outline: none;
-}
-
-.todo-check {
-    cursor: pointer;
-    transform: scale(1.5);
-}
-
-.add-todo,
-.change-theme,
-.filters {
-    background-color: #6C63FF;
-    color: #fff;
-    border: 1px solid #fff;
-}
-
-.add-todo:hover {
-    background-color: #008000;
-}
-
-.fa-solid.fa-pencil,
-.fa-solid.fa-trash {
-    font-size: 1.4rem;
-    color: #bbb;
-    cursor: pointer;
-}
-
-.fa-solid.fa-pencil:hover {
-    color: orange;
-}
-
-.fa-solid.fa-trash:hover {
-    color: red;
-}
-
-.fixed-bottom.left,
-.fixed-bottom.right {
-    i {
-        font-size: 2rem;
-        color: #fff;
-        background-color: #6C63FF;
-        padding: 0.5rem;
-        border-radius: 50%;
-    }
 }

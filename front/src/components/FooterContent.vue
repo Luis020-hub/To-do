@@ -23,3 +23,14 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+.fixed-bottom.left i,
+.fixed-bottom.right i {
+    font-size: 2rem;
+    color: #fff;
+    background-color: #6C63FF;
+    padding: 0.5rem;
+    border-radius: 50%;
+}
+</style>

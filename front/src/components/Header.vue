@@ -40,3 +40,17 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+.add-todo,
+.change-theme,
+.filters {
+    background-color: #6C63FF;
+    color: #fff;
+    border: 1px solid #fff;
+}
+
+.add-todo:hover {
+    background-color: #008000;
+}
+</style>
