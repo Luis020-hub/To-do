@@ -1,8 +1,8 @@
 <template>
   <div class="d-flex justify-content-center">
     <div class="layout col-10">
-      <Header @openAddTodoModal="openAddTodoModal" />
-      <MainContent :todos="todos" @openTodoDetails="openTodoDetails" @editTodo="openEditTodoModal"
+      <Header @openAddTodoModal="openAddTodoModal" @filterTodos="filterTodos" />
+      <MainContent :todos="filteredTodos" @openTodoDetails="openTodoDetails" @editTodo="openEditTodoModal"
         @deleteTodo="confirmDeleteTodo" />
       <FooterContent @openAddTodoModal="openAddTodoModal" />
     </div>
@@ -14,6 +14,7 @@ import Header from './components/Header.vue';
 import MainContent from './components/MainContent.vue';
 import FooterContent from './components/FooterContent.vue';
 import Swal from 'sweetalert2';
+import moment from 'moment';
 
 export default {
   components: {
@@ -24,13 +25,15 @@ export default {
   data() {
     return {
       todos: [],
+      filteredTodos: [],
       newTodo: {
         title: '',
         description: '',
         time: '',
         date: ''
       },
-      editedTodo: null
+      editedTodo: null,
+      currentFilter: 'All'
     };
   },
   methods: {
@@ -64,6 +67,7 @@ export default {
         if (result.isConfirmed) {
           this.todos.push({ ...this.newTodo });
           this.clearNewTodo();
+          this.filterTodos(this.currentFilter);
           Swal.fire({
             icon: 'success',
             title: 'Todo added successfully!',
@@ -130,6 +134,7 @@ export default {
           const index = this.todos.findIndex(t => t === todo);
           if (index !== -1) {
             this.todos.splice(index, 1, this.editedTodo);
+            this.filterTodos(this.currentFilter);
             Swal.fire({
               icon: 'success',
               title: 'Todo updated successfully!',
@@ -171,8 +176,37 @@ export default {
       const index = this.todos.findIndex(t => t === todo);
       if (index !== -1) {
         this.todos.splice(index, 1);
+        this.filterTodos(this.currentFilter);
+      }
+    },
+    filterTodos(filter) {
+      this.currentFilter = filter;
+      const today = moment().format('YYYY-MM-DD');
+      const nextDays = moment().add(7, 'days').format('YYYY-MM-DD');
+
+      switch (filter) {
+        case 'Today':
+          this.filteredTodos = this.todos.filter(todo => todo.date === today && !todo.completed);
+          break;
+        case 'Next Days':
+          this.filteredTodos = this.todos.filter(todo => moment(todo.date).isBetween(today, nextDays) && !todo.completed);
+          break;
+        case 'Solved':
+          this.filteredTodos = this.todos.filter(todo => todo.solved && !todo.completed);
+          break;
+        case 'Unsolved':
+          this.filteredTodos = this.todos.filter(todo => !todo.completed);
+          break;
+        case 'Expired':
+          this.filteredTodos = this.todos.filter(todo => moment(todo.date).isBefore(today) && !todo.completed);
+          break;
+        default:
+          this.filteredTodos = this.todos;
       }
     }
+  },
+  mounted() {
+    this.filterTodos(this.currentFilter);
   }
 };
 </script>

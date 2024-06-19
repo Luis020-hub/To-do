@@ -18,10 +18,11 @@
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         </button>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#">Today</a>
-                            <a class="dropdown-item" href="#">Next Days</a>
-                            <a class="dropdown-item" href="#">Solved</a>
-                            <a class="dropdown-item" href="#">Unsolved</a>
+                            <a class="dropdown-item" href="#" @click="filter('Today')">Today</a>
+                            <a class="dropdown-item" href="#" @click="filter('Next Days')">Next Days</a>
+                            <a class="dropdown-item" href="#" @click="filter('Solved')">Solved</a>
+                            <a class="dropdown-item" href="#" @click="filter('Unsolved')">Unsolved</a>
+                            <a class="dropdown-item" href="#" @click="filter('Expired')">Expired</a>
                         </div>
                     </div>
                 </div>
@@ -36,6 +37,9 @@ export default {
     methods: {
         openAddTodoModal() {
             this.$emit('openAddTodoModal');
+        },
+        filter(criteria) {
+            this.$emit('filterTodos', criteria);
         }
     }
 };
