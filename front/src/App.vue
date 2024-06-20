@@ -2,10 +2,8 @@
   <div>
     <div class="d-flex justify-content-center">
       <div class="layout col-10">
-        <Header @openAddTodoModal="openAddTodoModal" @toggleTheme="toggleTheme" :theme="theme"
-          @filterTodos="filterTodos" @updateSearchQuery="updateSearchQuery" />
-        <MainContent :todos="filteredTodos" @openTodoDetails="openTodoDetails" @editTodo="openEditTodoModal"
-          @deleteTodo="confirmDeleteTodo" @toggleComplete="toggleComplete" />
+        <Header @openAddTodoModal="openAddTodoModal" @toggleTheme="toggleTheme" :theme="theme" @filterTodos="filterTodos" @updateSearchQuery="updateSearchQuery" />
+        <MainContent :todos="filteredTodos" @openTodoDetails="openTodoDetails" @editTodo="openEditTodoModal" @deleteTodo="confirmDeleteTodo" @toggleComplete="toggleComplete" />
         <FooterContent @openAddTodoModal="openAddTodoModal" @toggleTheme="toggleTheme" :theme="theme" />
       </div>
     </div>
@@ -18,6 +16,7 @@ import Header from './components/Header.vue';
 import MainContent from './components/MainContent.vue';
 import FooterContent from './components/FooterContent.vue';
 import { openAddTodoModal, openEditTodoModal, openTodoDetails, confirmDeleteTodo } from './utils/swal';
+import { filterToday, filterNextDays, filterCompleted, filterUnsolved } from './utils/filterTodos';
 
 export default defineComponent({
   components: {
@@ -52,36 +51,17 @@ export default defineComponent({
       }
 
       switch (this.currentFilter) {
-        case 'Today': {
-          const yesterday = new Date();
-          yesterday.setDate(yesterday.getDate() - 1);
-          yesterday.setHours(0, 0, 0, 0);
-
-          filtered = filtered.filter(todo => {
-            const todoDate = new Date(todo.date);
-            return (
-              todoDate.getFullYear() === yesterday.getFullYear() &&
-              todoDate.getMonth() === yesterday.getMonth() &&
-              todoDate.getDate() === yesterday.getDate()
-            );
-          });
+        case 'Today':
+          filtered = filterToday(filtered);
           break;
-        }
-        case 'Next Days': {
-          const today = new Date();
-          today.setHours(0, 0, 0, 0);
-
-          filtered = filtered.filter(todo => {
-            const todoDate = new Date(todo.date);
-            return todoDate >= today;
-          });
+        case 'Next Days':
+          filtered = filterNextDays(filtered);
           break;
-        }
         case 'Solved':
-          filtered = filtered.filter(todo => todo.completed);
+          filtered = filterCompleted(filtered);
           break;
         case 'Unsolved':
-          filtered = filtered.filter(todo => !todo.completed);
+          filtered = filterUnsolved(filtered);
           break;
         case 'All':
         default:

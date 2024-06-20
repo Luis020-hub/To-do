@@ -2,8 +2,7 @@
     <main class="row d-flex justify-content-center mt-2">
         <div class="col-12 col-md-10">
             <div id="content">
-                <TodoItem v-for="todo in todos" :key="todo.id" :todo="todo" @openTodoDetails="openTodoDetails"
-                    @editTodo="editTodo" @deleteTodo="deleteTodo" @toggleComplete="toggleComplete" />
+                <TodoItem v-for="todo in todos" :key="todo.id" :todo="todo" @openTodoDetails="openTodoDetails" @editTodo="editTodo" @deleteTodo="deleteTodo" @toggleComplete="toggleComplete" />
             </div>
         </div>
     </main>

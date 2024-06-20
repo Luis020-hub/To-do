@@ -6,28 +6,21 @@
                 <div class="input-group col-12" style="padding: 0;">
                     <input type="text" class="form-control" placeholder="Search..." v-model="searchQuery" @input="updateSearchQuery">
                     <div class="input-group-append">
-                        <button type="button" class="btn add-todo btn-outline-secondary d-none d-md-block"
-                            @click="openAddTodoModal">
+                        <button type="button" class="btn add-todo btn-outline-secondary d-none d-md-block" @click="openAddTodoModal">
                             <i class="fa-solid fa-plus"></i>
                         </button>
                         <button type="button" class="btn change-theme btn-outline-secondary d-none d-md-block" @click="toggleTheme">
                             <i class="fa-solid" :class="{ 'fa-sun': theme === 'light', 'fa-moon': theme === 'dark' }"></i>
                         </button>
                         <button type="button"
-                            class="btn filters btn-outline-secondary dropdown-toggle dropdown-toggle-split"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            class="btn filters btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         </button>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#" @click="filter('All')"
-                                :class="{ active: currentFilter === 'All' }">All</a>
-                            <a class="dropdown-item" href="#" @click="filter('Today')"
-                                :class="{ active: currentFilter === 'Today' }">Today</a>
-                            <a class="dropdown-item" href="#" @click="filter('Next Days')"
-                                :class="{ active: currentFilter === 'Next Days' }">Next Days</a>
-                            <a class="dropdown-item" href="#" @click="filter('Solved')"
-                                :class="{ active: currentFilter === 'Solved' }">Solved</a>
-                            <a class="dropdown-item" href="#" @click="filter('Unsolved')"
-                                :class="{ active: currentFilter === 'Unsolved' }">Unsolved</a>
+                            <a class="dropdown-item" href="#" @click="filter('All')" :class="{ active: currentFilter === 'All' }">All</a>
+                            <a class="dropdown-item" href="#" @click="filter('Today')" :class="{ active: currentFilter === 'Today' }">Today</a>
+                            <a class="dropdown-item" href="#" @click="filter('Next Days')" :class="{ active: currentFilter === 'Next Days' }">Next Days</a>
+                            <a class="dropdown-item" href="#" @click="filter('Solved')" :class="{ active: currentFilter === 'Solved' }">Solved</a>
+                            <a class="dropdown-item" href="#" @click="filter('Unsolved')" :class="{ active: currentFilter === 'Unsolved' }">Unsolved</a>
                         </div>
                     </div>
                 </div>
