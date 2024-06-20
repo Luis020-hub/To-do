@@ -80,7 +80,9 @@ namespace back.Controllers
             existingTodoItem.Date = parsedDate.ToString("yyyy-MM-dd");
             existingTodoItem.Time = parsedTime.ToString(@"hh\:mm");
 
-            return NoContent();
+            string feedbackMessage = $"Todo Task with ID {existingTodoItem.Id} has been updated.";
+
+            return Ok(new { message = feedbackMessage });
         }
 
         [HttpDelete("{id}")]
@@ -92,8 +94,11 @@ namespace back.Controllers
                 return NotFound();
             }
 
+            string deletedTitle = todoItem.Title;
+
             todoItems.Remove(todoItem);
-            return NoContent();
+
+            return Ok(new { message = $"Todo task '{deletedTitle}' with ID {id} has been deleted." });
         }
     }
 }

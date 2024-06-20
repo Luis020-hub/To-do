@@ -133,9 +133,17 @@ export default defineComponent({
         }
       });
     },
-    toggleComplete(todo) {
+    async toggleComplete(todo) {
       const updatedTodo = { ...todo, completed: !todo.completed };
-      this.openEditTodoModal(updatedTodo);
+      try {
+        await updateTodo(updatedTodo.id, updatedTodo);
+        const index = this.todos.findIndex(t => t.id === updatedTodo.id);
+        if (index !== -1) {
+          this.todos.splice(index, 1, updatedTodo);
+        }
+      } catch (error) {
+        console.error("Erro ao atualizar status de completado:", error);
+      }
     },
     filterTodos(criteria) {
       this.currentFilter = criteria;
