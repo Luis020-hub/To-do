@@ -2,9 +2,10 @@
   <div>
     <div class="d-flex justify-content-center">
       <div class="layout col-10">
-        <Header @openAddTodoModal="openAddTodoModal" @toggleTheme="toggleTheme" :theme="theme" />
+        <Header @openAddTodoModal="openAddTodoModal" @toggleTheme="toggleTheme" :theme="theme"
+          @filterTodos="filterTodos" @updateSearchQuery="updateSearchQuery" />
         <MainContent :todos="filteredTodos" @openTodoDetails="openTodoDetails" @editTodo="openEditTodoModal"
-          @deleteTodo="confirmDeleteTodo" />
+          @deleteTodo="confirmDeleteTodo" @toggleComplete="toggleComplete" />
         <FooterContent @openAddTodoModal="openAddTodoModal" @toggleTheme="toggleTheme" :theme="theme" />
       </div>
     </div>
@@ -27,17 +28,68 @@ export default defineComponent({
   data() {
     return {
       todos: [],
-      filteredTodos: [],
       newTodo: {
         title: '',
         description: '',
         time: '',
-        date: ''
+        date: '',
+        completed: false
       },
       editedTodo: null,
       currentFilter: 'All',
+      searchQuery: '',
       theme: 'light'
     };
+  },
+  computed: {
+    filteredTodos() {
+      let filtered = this.todos;
+
+      if (this.searchQuery) {
+        filtered = filtered.filter(todo =>
+          todo.title.toLowerCase().includes(this.searchQuery.toLowerCase())
+        );
+      }
+
+      switch (this.currentFilter) {
+        case 'Today': {
+          const yesterday = new Date();
+          yesterday.setDate(yesterday.getDate() - 1);
+          yesterday.setHours(0, 0, 0, 0);
+
+          filtered = filtered.filter(todo => {
+            const todoDate = new Date(todo.date);
+            return (
+              todoDate.getFullYear() === yesterday.getFullYear() &&
+              todoDate.getMonth() === yesterday.getMonth() &&
+              todoDate.getDate() === yesterday.getDate()
+            );
+          });
+          break;
+        }
+        case 'Next Days': {
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+
+          filtered = filtered.filter(todo => {
+            const todoDate = new Date(todo.date);
+            return todoDate >= today;
+          });
+          break;
+        }
+        case 'Solved':
+          filtered = filtered.filter(todo => todo.completed);
+          break;
+        case 'Unsolved':
+          filtered = filtered.filter(todo => !todo.completed);
+          break;
+        case 'All':
+        default:
+          break;
+      }
+
+      return filtered;
+    }
   },
   watch: {
     theme(newTheme) {
@@ -46,10 +98,9 @@ export default defineComponent({
   },
   methods: {
     openAddTodoModal() {
-      openAddTodoModal((newTodo) => {
+      openAddTodoModal(newTodo => {
         this.todos.push(newTodo);
         this.clearNewTodo();
-        this.filterTodos(this.currentFilter);
       });
     },
     clearNewTodo() {
@@ -57,18 +108,18 @@ export default defineComponent({
         title: '',
         description: '',
         time: '',
-        date: ''
+        date: '',
+        completed: false
       };
     },
     openTodoDetails(todo) {
       openTodoDetails(todo);
     },
     openEditTodoModal(todo) {
-      openEditTodoModal(todo, (updatedTodo) => {
+      openEditTodoModal(todo, updatedTodo => {
         const index = this.todos.findIndex(t => t === todo);
         if (index !== -1) {
           this.todos.splice(index, 1, updatedTodo);
-          this.filterTodos(this.currentFilter);
         }
       });
     },
@@ -77,18 +128,19 @@ export default defineComponent({
         const index = this.todos.findIndex(t => t === todo);
         if (index !== -1) {
           this.todos.splice(index, 1);
-          this.filterTodos(this.currentFilter);
         }
       });
     },
     filterTodos(filter) {
       this.currentFilter = filter;
-      if (filter === 'All') {
-        this.filteredTodos = [...this.todos];
-      } else if (filter === 'Completed') {
-        this.filteredTodos = this.todos.filter(todo => todo.completed);
-      } else if (filter === 'Pending') {
-        this.filteredTodos = this.todos.filter(todo => !todo.completed);
+    },
+    updateSearchQuery(query) {
+      this.searchQuery = query;
+    },
+    toggleComplete(todo) {
+      const index = this.todos.findIndex(t => t === todo);
+      if (index !== -1) {
+        this.todos[index].completed = !this.todos[index].completed;
       }
     },
     toggleTheme() {
@@ -97,8 +149,6 @@ export default defineComponent({
   },
   mounted() {
     document.body.className = this.theme;
-    this.todos = [];
-    this.filterTodos(this.currentFilter);
   }
 });
 </script>

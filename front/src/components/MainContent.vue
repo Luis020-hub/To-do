@@ -2,8 +2,8 @@
     <main class="row d-flex justify-content-center mt-2">
         <div class="col-12 col-md-10">
             <div id="content">
-                <TodoItem v-for="(todo, index) in todos" :key="index" :todo="todo" @openTodoDetails="openTodoDetails"
-                    @editTodo="editTodo" @deleteTodo="deleteTodo" />
+                <TodoItem v-for="todo in todos" :key="todo.id" :todo="todo" @openTodoDetails="openTodoDetails"
+                    @editTodo="editTodo" @deleteTodo="deleteTodo" @toggleComplete="toggleComplete" />
             </div>
         </div>
     </main>
@@ -13,14 +13,9 @@
 import TodoItem from './TodoItem.vue';
 
 export default {
+    props: ['todos'],
     components: {
         TodoItem
-    },
-    props: {
-        todos: {
-            type: Array,
-            required: true
-        }
     },
     methods: {
         openTodoDetails(todo) {
@@ -31,6 +26,9 @@ export default {
         },
         deleteTodo(todo) {
             this.$emit('deleteTodo', todo);
+        },
+        toggleComplete(todo) {
+            this.$emit('toggleComplete', todo);
         }
     }
 };

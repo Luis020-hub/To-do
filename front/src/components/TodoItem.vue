@@ -1,9 +1,9 @@
 <template>
     <div class="row content-item">
         <div class="col-1 mt-auto mb-auto">
-            <input class="todo-check" type="checkbox" @change="toggleComplete">
+            <input class="todo-check" type="checkbox" :checked="todo.completed" @change="toggleComplete" />
         </div>
-        <div class="col-5 col-sm-8 col-md-8 details mt-2" @click="showDetails" :class="{ completed: isCompleted }">
+        <div class="col-5 col-sm-8 col-md-8 details mt-2" @click="showDetails" :class="{ completed: todo.completed }">
             <span><b>{{ todo.title }}</b></span>
             <div class="mb-1">
                 <small>{{ todo.time }}</small> <br>
@@ -20,17 +20,12 @@
 <script>
 export default {
     props: ['todo'],
-    data() {
-        return {
-            isCompleted: false
-        };
-    },
     methods: {
         showDetails() {
             this.$emit('openTodoDetails', this.todo);
         },
-        toggleComplete(event) {
-            this.isCompleted = event.target.checked;
+        toggleComplete() {
+            this.$emit('toggleComplete', this.todo);
         },
         editTodo() {
             this.$emit('editTodo', this.todo);
