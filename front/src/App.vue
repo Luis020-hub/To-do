@@ -17,6 +17,7 @@ import MainContent from './components/MainContent.vue';
 import FooterContent from './components/FooterContent.vue';
 import { openAddTodoModal, openEditTodoModal, openTodoDetails, confirmDeleteTodo } from './utils/swal';
 import { filterToday, filterNextDays, filterCompleted, filterUnsolved } from './utils/filterTodos';
+import { getTodos, createTodo, updateTodo, deleteTodo } from './utils/api';
 
 const TODO_STORAGE_KEY = 'todos';
 
@@ -84,66 +85,67 @@ export default defineComponent({
       document.body.className = newTheme;
     }
   },
+  created() {
+    this.fetchTodos();
+  },
   methods: {
-    openAddTodoModal() {
-      openAddTodoModal(newTodo => {
-        this.todos.push(newTodo);
-        this.clearNewTodo();
-      });
+    async fetchTodos() {
+      try {
+        const response = await getTodos();
+        this.todos = response.data;
+      } catch (error) {
+        console.error("Erro ao buscar todos:", error);
+      }
     },
-    clearNewTodo() {
-      this.newTodo = {
-        title: '',
-        description: '',
-        time: '',
-        date: '',
-        completed: false
-      };
+    openAddTodoModal() {
+      openAddTodoModal(async newTodo => {
+        try {
+          const response = await createTodo(newTodo);
+          this.todos.push(response.data);
+        } catch (error) {
+          console.error("Erro ao adicionar todo:", error);
+        }
+      });
     },
     openTodoDetails(todo) {
       openTodoDetails(todo);
     },
     openEditTodoModal(todo) {
-      openEditTodoModal(todo, updatedTodo => {
-        const index = this.todos.findIndex(t => t === todo);
-        if (index !== -1) {
-          this.todos.splice(index, 1, updatedTodo);
+      openEditTodoModal(todo, async updatedTodo => {
+        try {
+          await updateTodo(updatedTodo.id, updatedTodo);
+          const index = this.todos.findIndex(t => t.id === updatedTodo.id);
+          if (index !== -1) {
+            this.todos.splice(index, 1, updatedTodo);
+          }
+        } catch (error) {
+          console.error("Erro ao editar todo:", error);
         }
       });
     },
     confirmDeleteTodo(todo) {
-      confirmDeleteTodo(todo, () => {
-        const index = this.todos.findIndex(t => t === todo);
-        if (index !== -1) {
-          this.todos.splice(index, 1);
+      confirmDeleteTodo(async () => {
+        try {
+          await deleteTodo(todo.id);
+          this.todos = this.todos.filter(t => t.id !== todo.id);
+        } catch (error) {
+          console.error("Erro ao deletar todo:", error);
         }
       });
     },
-    filterTodos(filter) {
-      this.currentFilter = filter;
+    toggleComplete(todo) {
+      const updatedTodo = { ...todo, completed: !todo.completed };
+      this.openEditTodoModal(updatedTodo);
+    },
+    filterTodos(criteria) {
+      this.currentFilter = criteria;
     },
     updateSearchQuery(query) {
       this.searchQuery = query;
     },
-    toggleComplete(todo) {
-      const index = this.todos.findIndex(t => t === todo);
-      if (index !== -1) {
-        this.todos[index].completed = !this.todos[index].completed;
-      }
-    },
     toggleTheme() {
       this.theme = this.theme === 'light' ? 'dark' : 'light';
-    },
-    loadTodosFromStorage() {
-      const storedTodos = localStorage.getItem(TODO_STORAGE_KEY);
-      if (storedTodos) {
-        this.todos = JSON.parse(storedTodos);
-      }
     }
-  },
-  mounted() {
-    document.body.className = this.theme;
-    this.loadTodosFromStorage();
   }
 });
 </script>
@@ -151,7 +153,7 @@ export default defineComponent({
 <style>
 :root {
   --primary-color: #6C63FF;
-  --text-color: #fff;
+  --text-color: #000;
   --background-color: #fff;
 }
 

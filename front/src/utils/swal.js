@@ -105,7 +105,7 @@ export function openEditTodoModal(todo, callback) {
     });
 }
 
-export function confirmDeleteTodo(todo, callback) {
+export function confirmDeleteTodo(callback) {
     Swal.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",

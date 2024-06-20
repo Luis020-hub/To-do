@@ -1,31 +1,25 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using back.Models;
+using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 
 namespace back.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     public class TodoController : ControllerBase
     {
-        private readonly TodoContext _context;
-
-        public TodoController(TodoContext context)
-        {
-            _context = context;
-        }
+        private static List<TodoItem> todoItems = new List<TodoItem>();
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodos()
+        public ActionResult<IEnumerable<TodoItem>> GetTodos()
         {
-            return await _context.TodoItems.ToListAsync();
+            return todoItems;
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<TodoItem>> GetTodoItem(int id)
+        public ActionResult<TodoItem> GetTodoItem(int id)
         {
-            var todoItem = await _context.TodoItems.FindAsync(id);
+            var todoItem = todoItems.FirstOrDefault(t => t.Id == id);
 
             if (todoItem == null)
             {
@@ -36,27 +30,38 @@ namespace back.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem)
+        public ActionResult<TodoItem> PostTodoItem(TodoItem todoItem)
         {
-            if (!DateTime.TryParseExact(todoItem.Date, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out DateTime parsedDate))
+            if (!DateTime.TryParseExact(todoItem.Date, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
             {
                 return BadRequest("Invalid date format. Date should be in yyyy-MM-dd format.");
             }
 
-            todoItem.Date = parsedDate.ToString("yyyy-MM-dd");
+            if (!TimeSpan.TryParseExact(todoItem.Time, "hh\\:mm", CultureInfo.InvariantCulture, TimeSpanStyles.None, out TimeSpan parsedTime))
+            {
+                return BadRequest("Invalid time format. Time should be in hh:mm format.");
+            }
 
-            _context.TodoItems.Add(todoItem);
-            await _context.SaveChangesAsync();
+            todoItem.Date = parsedDate.ToString("yyyy-MM-dd");
+            todoItem.Time = parsedTime.ToString(@"hh\:mm");
+            todoItem.Id = todoItems.Count > 0 ? todoItems.Max(t => t.Id) + 1 : 1;
+            todoItems.Add(todoItem);
 
             return CreatedAtAction(nameof(GetTodoItem), new { id = todoItem.Id }, todoItem);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTodoItem(int id, TodoItem todoItem)
+        public IActionResult PutTodoItem(int id, TodoItem todoItem)
         {
             if (id != todoItem.Id)
             {
                 return BadRequest();
+            }
+
+            var existingTodoItem = todoItems.FirstOrDefault(t => t.Id == id);
+            if (existingTodoItem == null)
+            {
+                return NotFound();
             }
 
             if (!DateTime.TryParseExact(todoItem.Date, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
@@ -64,55 +69,31 @@ namespace back.Controllers
                 return BadRequest("Invalid date format. Date should be in yyyy-MM-dd format.");
             }
 
-            try
+            if (!TimeSpan.TryParseExact(todoItem.Time, "hh\\:mm", CultureInfo.InvariantCulture, TimeSpanStyles.None, out TimeSpan parsedTime))
             {
-                todoItem.Date = parsedDate.ToString("yyyy-MM-dd");
+                return BadRequest("Invalid time format. Time should be in hh:mm format.");
+            }
 
-                _context.Entry(todoItem).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TodoItemExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            existingTodoItem.Title = todoItem.Title;
+            existingTodoItem.Description = todoItem.Description;
+            existingTodoItem.IsCompleted = todoItem.IsCompleted;
+            existingTodoItem.Date = parsedDate.ToString("yyyy-MM-dd");
+            existingTodoItem.Time = parsedTime.ToString(@"hh\:mm");
 
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTodoItem(int id)
+        public IActionResult DeleteTodoItem(int id)
         {
-            var todoItem = await _context.TodoItems.FindAsync(id);
+            var todoItem = todoItems.FirstOrDefault(t => t.Id == id);
             if (todoItem == null)
             {
                 return NotFound();
             }
 
-            try
-            {
-                _context.TodoItems.Remove(todoItem);
-                await _context.SaveChangesAsync();
-
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao deletar o item: {ex.Message}");
-                return StatusCode(500, "Erro interno ao deletar o item");
-            }
-        }
-
-
-        private bool TodoItemExists(int id)
-        {
-            return _context.TodoItems.Any(e => e.Id == id);
+            todoItems.Remove(todoItem);
+            return NoContent();
         }
     }
 }

@@ -1,14 +1,7 @@
-using Microsoft.EntityFrameworkCore;
-
 namespace back.Models
 {
-    public class TodoContext : DbContext
+    public class TodoContext
     {
-        public TodoContext(DbContextOptions<TodoContext> options)
-            : base(options)
-        {
-        }
-
-        public DbSet<TodoItem> TodoItems { get; set; }
+        public List<TodoItem> TodoItems { get; set; } = new List<TodoItem>();
     }
 }
