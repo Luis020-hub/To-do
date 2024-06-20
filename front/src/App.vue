@@ -2,7 +2,7 @@
   <div>
     <div class="d-flex justify-content-center">
       <div class="layout col-10">
-        <Header @openAddTodoModal="openAddTodoModal" @toggleTheme="toggleTheme" :theme="theme" @filterTodos="filterTodos" @updateSearchQuery="updateSearchQuery" />
+        <Header @openAddTodoModal="openAddTodoModal" @toggleTheme="toggleTheme" :theme="theme" :todos="todos" @filterTodos="filterTodos" @updateSearchQuery="updateSearchQuery" />
         <MainContent :todos="filteredTodos" @openTodoDetails="openTodoDetails" @editTodo="openEditTodoModal" @deleteTodo="confirmDeleteTodo" @toggleComplete="toggleComplete" />
         <FooterContent @openAddTodoModal="openAddTodoModal" @toggleTheme="toggleTheme" :theme="theme" />
       </div>
@@ -17,6 +17,8 @@ import MainContent from './components/MainContent.vue';
 import FooterContent from './components/FooterContent.vue';
 import { openAddTodoModal, openEditTodoModal, openTodoDetails, confirmDeleteTodo } from './utils/swal';
 import { filterToday, filterNextDays, filterCompleted, filterUnsolved } from './utils/filterTodos';
+
+const TODO_STORAGE_KEY = 'todos';
 
 export default defineComponent({
   components: {
@@ -72,6 +74,12 @@ export default defineComponent({
     }
   },
   watch: {
+    todos: {
+      handler(newTodos) {
+        localStorage.setItem(TODO_STORAGE_KEY, JSON.stringify(newTodos));
+      },
+      deep: true
+    },
     theme(newTheme) {
       document.body.className = newTheme;
     }
@@ -125,10 +133,17 @@ export default defineComponent({
     },
     toggleTheme() {
       this.theme = this.theme === 'light' ? 'dark' : 'light';
+    },
+    loadTodosFromStorage() {
+      const storedTodos = localStorage.getItem(TODO_STORAGE_KEY);
+      if (storedTodos) {
+        this.todos = JSON.parse(storedTodos);
+      }
     }
   },
   mounted() {
     document.body.className = this.theme;
+    this.loadTodosFromStorage();
   }
 });
 </script>
