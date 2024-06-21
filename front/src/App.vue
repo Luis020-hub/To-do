@@ -66,6 +66,7 @@ export default defineComponent({
   },
   created() {
     this.fetchTodos();
+    this.loadThemeFromLocalStorage();
   },
   methods: {
     async fetchTodos() {
@@ -132,6 +133,27 @@ export default defineComponent({
     },
     toggleTheme() {
       this.theme = this.theme === 'light' ? 'dark' : 'light';
+      this.saveThemeToLocalStorage();
+      this.applyTheme();
+    },
+    applyTheme() {
+      if (this.theme === 'dark') {
+        document.body.classList.add('dark');
+        document.body.classList.remove('light');
+      } else {
+        document.body.classList.add('light');
+        document.body.classList.remove('dark');
+      }
+    },
+    saveThemeToLocalStorage() {
+      localStorage.setItem('theme', this.theme);
+    },
+    loadThemeFromLocalStorage() {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        this.theme = savedTheme;
+        this.applyTheme();
+      }
     }
   }
 });
