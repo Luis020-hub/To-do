@@ -19,8 +19,6 @@ import { openAddTodoModal, openEditTodoModal, openTodoDetails, confirmDeleteTodo
 import { filterToday, filterNextDays, filterCompleted, filterUnsolved } from './utils/filterTodos';
 import { getTodos, createTodo, updateTodo, deleteTodo } from './utils/api';
 
-const TODO_STORAGE_KEY = 'todos';
-
 export default defineComponent({
   components: {
     Header,
@@ -66,19 +64,8 @@ export default defineComponent({
       return filtered;
     }
   },
-  watch: {
-    todos: {
-      handler(newTodos) {
-        localStorage.setItem(TODO_STORAGE_KEY, JSON.stringify(newTodos));
-      },
-      deep: true
-    },
-    theme(newTheme) {
-      document.body.className = newTheme;
-    }
-  },
   created() {
-    this.loadTodos();
+    this.fetchTodos();
   },
   methods: {
     async fetchTodos() {
@@ -87,14 +74,6 @@ export default defineComponent({
         this.todos = response.data;
       } catch (error) {
         console.error("Erro ao buscar todos:", error);
-      }
-    },
-    loadTodos() {
-      const savedTodos = localStorage.getItem(TODO_STORAGE_KEY);
-      if (savedTodos) {
-        this.todos = JSON.parse(savedTodos);
-      } else {
-        this.fetchTodos();
       }
     },
     openAddTodoModal() {
