@@ -24,9 +24,9 @@ export function filterNextDays(todos) {
 }
 
 export function filterCompleted(todos) {
-    return todos.filter(todo => todo.completed);
+    return todos.filter(todo => todo.isCompleted);
 }
 
 export function filterUnsolved(todos) {
-    return todos.filter(todo => !todo.completed);
+    return todos.filter(todo => !todo.isCompleted);
 }
