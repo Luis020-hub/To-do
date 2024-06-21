@@ -30,14 +30,6 @@ export default defineComponent({
   data() {
     return {
       todos: [],
-      newTodo: {
-        title: '',
-        description: '',
-        time: '',
-        date: '',
-        completed: false
-      },
-      editedTodo: null,
       currentFilter: 'All',
       searchQuery: '',
       theme: 'light'
@@ -86,7 +78,7 @@ export default defineComponent({
     }
   },
   created() {
-    this.fetchTodos();
+    this.loadTodos();
   },
   methods: {
     async fetchTodos() {
@@ -95,6 +87,14 @@ export default defineComponent({
         this.todos = response.data;
       } catch (error) {
         console.error("Erro ao buscar todos:", error);
+      }
+    },
+    loadTodos() {
+      const savedTodos = localStorage.getItem(TODO_STORAGE_KEY);
+      if (savedTodos) {
+        this.todos = JSON.parse(savedTodos);
+      } else {
+        this.fetchTodos();
       }
     },
     openAddTodoModal() {
@@ -134,7 +134,7 @@ export default defineComponent({
       });
     },
     async toggleComplete(todo) {
-      const updatedTodo = { ...todo, completed: !todo.completed };
+      const updatedTodo = { ...todo, isCompleted: !todo.isCompleted };
       try {
         await updateTodo(updatedTodo.id, updatedTodo);
         const index = this.todos.findIndex(t => t.id === updatedTodo.id);

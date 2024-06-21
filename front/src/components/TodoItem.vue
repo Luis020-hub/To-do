@@ -1,9 +1,9 @@
 <template>
     <div class="row content-item">
         <div class="col-1 mt-auto mb-auto">
-            <input class="todo-check" type="checkbox" :checked="todo.completed" @change="toggleComplete" />
+            <input class="todo-check" type="checkbox" :checked="todo.isCompleted" @change="toggleComplete" />
         </div>
-        <div class="col-5 col-sm-8 col-md-8 details mt-2" @click="showDetails" :class="{ completed: todo.completed }">
+        <div class="col-5 col-sm-8 col-md-8 details mt-2" @click="showDetails" :class="{ completed: todo.isCompleted }">
             <span><b>{{ todo.title }}</b></span>
             <div class="mb-1">
                 <small>{{ todo.time }}</small> <br>
