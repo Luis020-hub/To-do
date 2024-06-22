@@ -2,7 +2,15 @@
 
 ## Descrição
 
-Este projeto é dividido em duas partes: back em ASP.NET Core (C#) e um front em Vue.js.
+Este aplicativo de To-Do List é uma ferramenta prática para organizar suas tarefas diárias de forma simples e eficiente. Com uma interface amigável e responsiva, ele permite que você acompanhe suas atividades e mantenha tudo em ordem. As funcionalidades incluem adicionar, excluir, editar, marcar como concluído, filtrar tarefas, e alterar o tema da interface.
+
+## Estrutura do projeto
+
+### Backend:
+Implementa a API utilizando ASP.NET Core, com controladores, modelos de dados, e configuração de aplicação.
+
+### Frontend:
+Interface do usuário desenvolvida com Vue.js, composta por componentes, utilitários, e arquivos de configuração.
 
 ## Configuração do Backend (ASP.NET Core)
 
@@ -37,3 +45,8 @@ Este projeto é dividido em duas partes: back em ASP.NET Core (C#) e um front em
 Após seguir os passos acima, você poderá acessar o projeto localmente:
 - Backend ASP.NET Core: [http://localhost:5151](http://localhost:5151)
 - Frontend Vue.js: [http://localhost:8080](http://localhost:8080)
+
+### Maiores desafios
+
+- A integração do back com o front.
+- Sincronizar corretamente os dados de data e hora.
