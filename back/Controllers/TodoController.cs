@@ -85,6 +85,21 @@ namespace back.Controllers
             return Ok(new { message = feedbackMessage });
         }
 
+        [HttpPatch("{id}/complete")]
+        public IActionResult MarkAsComplete(int id, [FromBody] bool isCompleted)
+        {
+            var todoItem = todoItems.FirstOrDefault(t => t.Id == id);
+            if (todoItem == null)
+            {
+                return NotFound();
+            }
+
+            todoItem.IsCompleted = isCompleted;
+            string feedbackMessage = $"Todo Task with ID {todoItem.Id} has been marked as {(isCompleted ? "completed" : "not completed")}.";
+
+            return Ok(new { message = feedbackMessage });
+        }
+
         [HttpDelete("{id}")]
         public IActionResult DeleteTodoItem(int id)
         {
