@@ -23,6 +23,11 @@ export function openAddTodoModal(callback) {
             const time = document.getElementById('swal-input3').value;
             const date = document.getElementById('swal-input4').value;
 
+            if (containsHtmlTags(title) || containsHtmlTags(description)) {
+                Swal.showValidationMessage('Titles and descriptions cannot contain HTML tags.');
+                return false;
+            }
+
             if (!title || !description || !time || !date) {
                 Swal.showValidationMessage('All fields are required');
                 return false;
@@ -89,6 +94,12 @@ export function openEditTodoModal(todo, callback) {
             const description = document.getElementById('swal-input2').value;
             const time = document.getElementById('swal-input3').value;
             const date = document.getElementById('swal-input4').value;
+
+            if (containsHtmlTags(title) || containsHtmlTags(description)) {
+                Swal.showValidationMessage('Titles and descriptions cannot contain HTML tags.');
+                return false;
+            }
+
             if (!title || !description || !time || !date) {
                 Swal.showValidationMessage('All fields are required');
                 return false;
@@ -139,4 +150,9 @@ export function confirmDeleteTodo(callback) {
             );
         }
     });
+}
+
+function containsHtmlTags(input) {
+    const htmlRegex = /<.*?>/g;
+    return htmlRegex.test(input);
 }

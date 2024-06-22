@@ -1,6 +1,7 @@
-using back.Models;
-using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
+using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Mvc;
+using back.Models;
 
 namespace back.Controllers
 {
@@ -9,6 +10,13 @@ namespace back.Controllers
     public class TodoController : ControllerBase
     {
         private static List<TodoItem> todoItems = new List<TodoItem>();
+
+        private static readonly Regex HtmlRegex = new Regex("<.*?>", RegexOptions.Compiled);
+
+        private bool ContainsHtmlTags(string input)
+        {
+            return HtmlRegex.IsMatch(input);
+        }
 
         [HttpGet]
         public ActionResult<IEnumerable<TodoItem>> GetTodos()
@@ -32,6 +40,11 @@ namespace back.Controllers
         [HttpPost]
         public ActionResult<TodoItem> PostTodoItem(TodoItem todoItem)
         {
+            if (ContainsHtmlTags(todoItem.Title) || ContainsHtmlTags(todoItem.Description))
+            {
+                return BadRequest("Titles and descriptions cannot contain HTML tags.");
+            }
+
             if (!DateTime.TryParseExact(todoItem.Date, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
             {
                 return BadRequest("Invalid date format. Date should be in yyyy-MM-dd format.");
@@ -62,6 +75,11 @@ namespace back.Controllers
             if (existingTodoItem == null)
             {
                 return NotFound();
+            }
+
+            if (ContainsHtmlTags(todoItem.Title) || ContainsHtmlTags(todoItem.Description))
+            {
+                return BadRequest("Titles and descriptions cannot contain HTML tags.");
             }
 
             if (!DateTime.TryParseExact(todoItem.Date, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
