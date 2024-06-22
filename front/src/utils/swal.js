@@ -5,25 +5,33 @@ export function openAddTodoModal(callback) {
         title: 'Add New Todo',
         html: `
             <div>
-                <input id="swal-input1" class="swal2-input" placeholder="Title">
+                <input id="swal-input1" class="swal2-input" placeholder="Title" required>
             </div>
             <div>
-                <textarea id="swal-input2" class="swal2-textarea" placeholder="Description"></textarea>
+                <textarea id="swal-input2" class="swal2-textarea" placeholder="Description" required></textarea>
             </div>
             <div>
-                <input id="swal-input3" class="swal2-input" type="time" placeholder="Time">
-                <input id="swal-input4" class="swal2-input" type="date" placeholder="Date">
+                <input id="swal-input3" class="swal2-input" type="time" placeholder="Time" required>
+                <input id="swal-input4" class="swal2-input" type="date" placeholder="Date" required>
             </div>
         `,
         showCancelButton: true,
         focusConfirm: false,
         preConfirm: () => {
-            const popup = Swal.getPopup();
+            const title = document.getElementById('swal-input1').value;
+            const description = document.getElementById('swal-input2').value;
+            const time = document.getElementById('swal-input3').value;
+            const date = document.getElementById('swal-input4').value;
+
+            if (!title || !description || !time || !date) {
+                Swal.showValidationMessage('All fields are required');
+                return false;
+            }
             return {
-                title: popup.querySelector('#swal-input1').value,
-                description: popup.querySelector('#swal-input2').value,
-                time: popup.querySelector('#swal-input3').value,
-                date: popup.querySelector('#swal-input4').value
+                title: title,
+                description: description,
+                time: time,
+                date: date
             };
         }
     }).then((result) => {
@@ -64,25 +72,32 @@ export function openEditTodoModal(todo, callback) {
         title: 'Edit Todo',
         html: `
             <div>
-                <input id="swal-input1" class="swal2-input" value="${todo.title}">
+                <input id="swal-input1" class="swal2-input" value="${todo.title}" required>
             </div>
             <div>
-                <textarea id="swal-input2" class="swal2-textarea">${todo.description}</textarea>
+                <textarea id="swal-input2" class="swal2-textarea" required>${todo.description}</textarea>
             </div>
             <div>
-                <input id="swal-input3" class="swal2-input" type="time" value="${todo.time}">
-                <input id="swal-input4" class="swal2-input" type="date" value="${todo.date}">
+                <input id="swal-input3" class="swal2-input" type="time" value="${todo.time}" required>
+                <input id="swal-input4" class="swal2-input" type="date" value="${todo.date}" required>
             </div>
         `,
         showCancelButton: true,
         focusConfirm: false,
         preConfirm: () => {
-            const popup = Swal.getPopup();
+            const title = document.getElementById('swal-input1').value;
+            const description = document.getElementById('swal-input2').value;
+            const time = document.getElementById('swal-input3').value;
+            const date = document.getElementById('swal-input4').value;
+            if (!title || !description || !time || !date) {
+                Swal.showValidationMessage('All fields are required');
+                return false;
+            }
             return {
-                title: popup.querySelector('#swal-input1').value,
-                description: popup.querySelector('#swal-input2').value,
-                time: popup.querySelector('#swal-input3').value,
-                date: popup.querySelector('#swal-input4').value
+                title: title,
+                description: description,
+                time: time,
+                date: date
             };
         }
     }).then((result) => {
