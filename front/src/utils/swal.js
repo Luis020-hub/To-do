@@ -32,6 +32,12 @@ export function openAddTodoModal(callback) {
                 Swal.showValidationMessage('All fields are required');
                 return false;
             }
+
+            if (title.length > 40) {
+                Swal.showValidationMessage('Title must not exceed 40 characters');
+                return false;
+            }
+
             return {
                 title: title,
                 description: description,
@@ -104,6 +110,12 @@ export function openEditTodoModal(todo, callback) {
                 Swal.showValidationMessage('All fields are required');
                 return false;
             }
+
+            if (title.length > 40) {
+                Swal.showValidationMessage('Title must not exceed 40 characters');
+                return false;
+            }
+            
             return {
                 title: title,
                 description: description,

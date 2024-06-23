@@ -60,6 +60,7 @@ export default {
 
 .details {
     cursor: pointer;
+    overflow-x: hidden;
 }
 
 .completed span,

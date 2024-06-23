@@ -21,6 +21,9 @@ namespace back.Controllers
         private bool IsValidTime(string time, out TimeSpan parsedTime) =>
             TimeSpan.TryParseExact(time, "hh\\:mm", CultureInfo.InvariantCulture, TimeSpanStyles.None, out parsedTime);
 
+        private bool IsValidTitleLength(string title) =>
+            title.Length <= 40;
+
         [HttpGet]
         public ActionResult<IEnumerable<TodoItem>> GetTodos() => Ok(todoItems);
 
@@ -44,6 +47,9 @@ namespace back.Controllers
             if (!IsValidTime(todoItem.Time, out TimeSpan parsedTime))
                 return BadRequest("Invalid time format. Time should be in hh:mm format.");
 
+            if (!IsValidTitleLength(todoItem.Title))
+                return BadRequest("Title must not exceed 40 characters.");
+
             todoItem.Date = parsedDate.ToString("yyyy-MM-dd");
             todoItem.Time = parsedTime.ToString(@"hh\:mm");
             todoItem.Id = todoItems.Count > 0 ? todoItems.Max(t => t.Id) + 1 : 1;
@@ -66,6 +72,9 @@ namespace back.Controllers
 
             if (!IsValidTime(updatedTodoItem.Time, out TimeSpan parsedTime))
                 return BadRequest("Invalid time format. Time should be in hh:mm format.");
+
+            if (!IsValidTitleLength(updatedTodoItem.Title))
+                return BadRequest("Title must not exceed 40 characters.");
 
             existingTodoItem.Title = updatedTodoItem.Title;
             existingTodoItem.Description = updatedTodoItem.Description;
